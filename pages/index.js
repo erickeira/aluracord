@@ -60,7 +60,7 @@ function Titulo(props) {
               as="form"
               onSubmit={function(infosdoEvento){
                 infosdoEvento.preventDefault();
-                roteamento.push('/chat');
+                roteamento.push('/chat?username=' + username);
                
               }}
               styleSheet={{
