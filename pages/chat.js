@@ -49,8 +49,6 @@ export default function ChatPage() {
             subscription.unsubscribe();
           }
     
-        
-
     }, []);
  
 
@@ -73,9 +71,6 @@ export default function ChatPage() {
             .then(({data}) => {
 
             });
-
-
-
 
         setMensagem('');
     }
@@ -179,7 +174,7 @@ export default function ChatPage() {
                     marginBottom: '8px',
                 }}
                 styleSheet={{
-                    backgroundColor: appConfig.theme.colors.neutrals[800],
+                    backgroundColor: appConfig.theme.colors.primary[600],
                     marginRight: '12px',
                     hover: {
                         backgroundColor: appConfig.theme.colors.primary[700]
@@ -205,7 +200,8 @@ export default function ChatPage() {
     )
 }
 
-function Header() {
+function Header(username) {
+
     return (
         <>
              
@@ -213,6 +209,25 @@ function Header() {
                 <Text variant='heading5'>
                     Chat  
                 </Text>
+                <Button
+                iconName='Circle'
+                label='Online'
+                style={{
+                    color: 'green',
+                    backgroundColor: 'none',
+                }}
+                styleSheet={{
+                    backgroundColor: appConfig.theme.colors.neutrals["700"],
+                    hover: {
+                        backgroundColor: appConfig.theme.colors.neutrals[800]
+                    },
+                    focus: {
+                        backgroundColor: appConfig.theme.colors.neutrals[700]
+                    }
+                }}
+
+                />
+                    
                 
                 <Button
                     variant='tertiary'
@@ -226,19 +241,53 @@ function Header() {
 }
 
 function MessageList(props) {
+
+    function mostrarFoto(mensagemFoto){
+        console.log(mensagemFoto)
+        return(
+            <Image 
+                           src={`https://github.com/${mensagemFoto}.png`}
+                           styleSheet={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            borderRadius: '5px',
+                            position: 'absolute',
+                            backgroundColor: appConfig.theme.colors.neutrals[800],
+                            width: {
+                              xs: '150px',
+                              sm: '150px',
+                            },
+                            height: '150px',
+                            left: '50px', 
+                            top: '10px',
+                            boxShadow: 'rgba(4, 4, 5, 0.15) 0px 0px 0px 1px, rgba(0, 0, 0, 0.24) 0px 8px 16px 0px',
+                        }}/>
+        )
+    }
+
+    function handleExcluirMensagem(mensagemRemover){
+        supabaseClient
+        .from('mensagens')
+        .delete()
+        .match({id : mensagemRemover.id})
+        .then(({data}) => {
+        });
+    }
+    
+    const [isOpen, setOpenState] = React.useState('');
     console.log('MessageList', props);
     return (
         <Box
-            tag="ul"
+            tag="ul"    
             styleSheet={{
-                overflowX: 'scroll',
-                overflowY: 'scroll',
+                overflow: 'auto',
                 display: 'flex',
                 flexDirection: 'column-reverse',
                 flex: 1,
                 color: appConfig.theme.colors.neutrals["000"],
                 marginBottom: '16px',
                 heigth:'100%',
+            
             }}
 
         >
@@ -268,9 +317,18 @@ function MessageList(props) {
                                 borderRadius: '50%',
                                 display: 'inline-block',
                                 marginRight: '8px',
+                                hover: {
+                                width: '22px',
+                                height: '22px',
+                                }
                             }}
                             src={`https://github.com/${mensagem.de}.png`}
+                            onClick={() => setOpenState(!isOpen)}
                         />
+                        {isOpen && (
+                           mostrarFoto(mensagem.de)
+                        )}
+                        
                         <Text tag="strong">
                             {mensagem.de}
                         </Text>
@@ -308,6 +366,9 @@ function MessageList(props) {
                                 backgroundColor: appConfig.theme.colors.primary[1000]
                             }
                         }}
+                        onClick={() => {
+                            handleExcluirMensagem(mensagem);
+                        }}
                         />
 
                        
@@ -315,12 +376,18 @@ function MessageList(props) {
 
                         {mensagem.texto.startsWith(':sticker:')
                         ?(
-                            <Image  src={mensagem.texto.replace(':sticker:', '')}/>
+                            <Image  
+                            src={mensagem.texto.replace(':sticker:', '')}
+                            style={{
+                                maxWidth: '100px'
+                            }}
+                            />
                         )
                         :(
                             mensagem.texto
+
                         )}
-                    
+
 
                 </Text>
                 )

@@ -22,19 +22,18 @@ export function ButtonSendSticker(props) {
         marginBottom: '8px',
     }}
     styleSheet={{
-        backgroundColor: appConfig.theme.colors.neutrals[800],
+        backgroundColor: appConfig.theme.colors.primary[1100],
         marginRight: '12px',
         hover: {
-            backgroundColor: appConfig.theme.colors.primary[700]
+            backgroundColor: appConfig.theme.colors.neutrals[1000]
         },
         focus: {
-            backgroundColor: appConfig.theme.colors.primary[700]
+            backgroundColor: appConfig.theme.colors.neutrals[1000]
         }
     }}
 
         label="😋"
         onClick={() => setOpenState(!isOpen)}
-        onHover={() => setOpenState(!isOpen)}
       />
       {isOpen && (
         <Box
@@ -72,7 +71,7 @@ export function ButtonSendSticker(props) {
               justifyContent: 'space-between',
               flex: 1,
               paddingTop: '16px',
-              overflow: 'scroll',
+              overflow: 'auto',
             }}
           >
             {appConfig.stickers.map((sticker) => (
