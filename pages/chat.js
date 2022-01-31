@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import appConfig from '../config.json';
 import { createClient } from '@supabase/supabase-js';
 import { ButtonSendSticker } from '../src/componentes/ButtonSendStickers';
+import { Loading } from '../src/componentes/Loading';
+
 
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQwOTQwNCwiZXhwIjoxOTU4OTg1NDA0fQ.aRGidpO-ArrYzWrQ5RNBqz0vIFjR5qplg9dor6kgigQ';
 const SUPABASE_URL = 'https://jkazvpzglcswgqmgrrjc.supabase.co';
@@ -24,6 +26,8 @@ export default function ChatPage() {
     // Sua lógica vai aqui
     const [mensagem, setMensagem] = React.useState('');
     const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
+    const [loading, setLoading] = React.useState(false);
+
 
     
     React.useEffect(() => {
@@ -33,7 +37,8 @@ export default function ChatPage() {
         .order('created_at', {ascending: false})
         .then(({data}) => {
           console.log(data);
-          setListaDeMensagens(data)
+          setListaDeMensagens(data);
+          setLoading(true);
         });
 
         const subscription = escutaMensagensEmTempoReal((novaMensagem) => {
@@ -48,11 +53,26 @@ export default function ChatPage() {
           return () => {
             subscription.unsubscribe();
           }
-    
+          
     }, []);
  
 
+    function handleExcluirMensagem(mensagemRemover){
+        supabaseClient
+        .from('mensagens')
+        .delete()
+        .match({id : mensagemRemover.id})
+        .then(({data}) => {
+         
+            const listaDeMensagemFiltrada = listaDeMensagens.filter((messageFiltered) => {
+                return messageFiltered.id != data[0].id;
+            })
+            // Setando a nova lista filtrada, com uma mensagem a menos
+            setListaDeMensagens(listaDeMensagemFiltrada)
+         
+        });
     
+    }
 
 
     function handleNovaMensagem(novaMensagem){
@@ -75,6 +95,7 @@ export default function ChatPage() {
         setMensagem('');
     }
     }
+
 
 
     // ./Sua lógica vai aqui
@@ -117,8 +138,8 @@ export default function ChatPage() {
 
                     }}
                 >
-
-                    <MessageList mensagens={listaDeMensagens} /> 
+                    {loading === true ? <MessageList mensagens={listaDeMensagens} deleteMessage={handleExcluirMensagem}  />
+                        : <Loading />}
                     {/* {listaDeMensagens.map((mensagemAtual) => {
                         return(
                             <li key={mensagemAtual.id} >
@@ -144,7 +165,6 @@ export default function ChatPage() {
                                 if(event.key === "Enter"){ 
                                 event.preventDefault();
                                 handleNovaMensagem(mensagem);
-                                   
                                 }
                             }}
                             placeholder="Insira sua mensagem aqui..."
@@ -228,7 +248,7 @@ function Header(username) {
 
                 />
                     
-                
+                   
                 <Button
                     variant='tertiary'
                     colorVariant='neutral'
@@ -240,7 +260,14 @@ function Header(username) {
     )
 }
 
+
+
+
+
 function MessageList(props) {
+
+    const handleExcluirMensagem = props.deleteMessage
+ 
 
     function mostrarFoto(mensagemFoto){
         console.log(mensagemFoto)
@@ -265,17 +292,8 @@ function MessageList(props) {
         )
     }
 
-    function handleExcluirMensagem(mensagemRemover){
-        supabaseClient
-        .from('mensagens')
-        .delete()
-        .match({id : mensagemRemover.id})
-        .then(({data}) => {
-        });
-    }
     
-    const [isOpen, setOpenState] = React.useState('');
-    console.log('MessageList', props);
+
     return (
         <Box
             tag="ul"    
@@ -323,11 +341,9 @@ function MessageList(props) {
                                 }
                             }}
                             src={`https://github.com/${mensagem.de}.png`}
-                            onClick={() => setOpenState(!isOpen)}
+                        
                         />
-                        {isOpen && (
-                           mostrarFoto(mensagem.de)
-                        )}
+                        
                         
                         <Text tag="strong">
                             {mensagem.de}

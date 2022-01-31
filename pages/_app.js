@@ -1,3 +1,5 @@
+import React from 'react';
+
 function GlobalStyle(){
     return(
         <style global jsx>
@@ -32,6 +34,7 @@ function GlobalStyle(){
 
 
 export default function MyApp({Component, pageProps}){
+  const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
     console.log("Roda em todas as  Páginas");
     return(
      <>   
