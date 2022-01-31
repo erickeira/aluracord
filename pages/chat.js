@@ -104,7 +104,7 @@ export default function ChatPage() {
             styleSheet={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 backgroundColor: appConfig.theme.colors.primary[500],
-                backgroundImage: `url(https://fyre.cdn.sewest.net/maple/60d3940f7ad2d100193d493d/mgg_news_announcement_mainimage-jKUXpKl13.jpg?width=1400&quality=80)`,
+                backgroundImage: `url(https://cdnb.artstation.com/p/assets/images/images/024/538/827/original/pixel-jeff-clipa-s.gif?1582740711)`,
                 backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
                 color: appConfig.theme.colors.neutrals['000']
             }}
@@ -188,9 +188,9 @@ export default function ChatPage() {
                 style={{
                     borderRadius: '0%',
                     height: '44px',
-                    padding: '6px 8px',
+                    padding: '6px 8px ',
                     borderRadius: '5px',
-                    fontSize: '16px',
+                    fontSize: '15px',
                     marginBottom: '8px',
                 }}
                 styleSheet={{
@@ -229,24 +229,7 @@ function Header(username) {
                 <Text variant='heading5'>
                     Chat  
                 </Text>
-                <Button
-                iconName='Circle'
-                label='Online'
-                style={{
-                    color: 'green',
-                    backgroundColor: 'none',
-                }}
-                styleSheet={{
-                    backgroundColor: appConfig.theme.colors.neutrals["700"],
-                    hover: {
-                        backgroundColor: appConfig.theme.colors.neutrals[800]
-                    },
-                    focus: {
-                        backgroundColor: appConfig.theme.colors.neutrals[700]
-                    }
-                }}
-
-                />
+                
                     
                    
                 <Button
@@ -267,31 +250,9 @@ function Header(username) {
 function MessageList(props) {
 
     const handleExcluirMensagem = props.deleteMessage
+    const roteamento = useRouter();
+    const usuarioLogado = roteamento.query.username;
  
-
-    function mostrarFoto(mensagemFoto){
-        console.log(mensagemFoto)
-        return(
-            <Image 
-                           src={`https://github.com/${mensagemFoto}.png`}
-                           styleSheet={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            borderRadius: '5px',
-                            position: 'absolute',
-                            backgroundColor: appConfig.theme.colors.neutrals[800],
-                            width: {
-                              xs: '150px',
-                              sm: '150px',
-                            },
-                            height: '150px',
-                            left: '50px', 
-                            top: '10px',
-                            boxShadow: 'rgba(4, 4, 5, 0.15) 0px 0px 0px 1px, rgba(0, 0, 0, 0.24) 0px 8px 16px 0px',
-                        }}/>
-        )
-    }
-
     
 
     return (
@@ -359,6 +320,7 @@ function MessageList(props) {
                             {(new Date().toLocaleDateString())}
                         </Text>
                      
+                    
                         <Button
                         iconName="Trash"                       
                         variant='tertiary'

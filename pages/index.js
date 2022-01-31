@@ -36,12 +36,13 @@ function Titulo(props) {
           styleSheet={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             backgroundColor: appConfig.theme.colors.primary[500],
-            backgroundImage: 'url(https://fyre.cdn.sewest.net/maple/60d3940f7ad2d100193d493d/mgg_news_announcement_mainimage-jKUXpKl13.jpg?width=1400&quality=80)',
+            backgroundImage: 'url(https://cdnb.artstation.com/p/assets/images/images/024/538/827/original/pixel-jeff-clipa-s.gif?1582740711)',
             backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
           }}
         >
           <Box
             styleSheet={{
+              opacity:'85%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -68,7 +69,7 @@ function Titulo(props) {
                 width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
               }}
             >
-              <Titulo tag="h2">Descubra a Galáxia!</Titulo>
+              <Titulo tag="h2">Bem Vindo de Volta!</Titulo>
               <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
                 {appConfig.name}
               </Text>
