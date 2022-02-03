@@ -320,36 +320,38 @@ function MessageList(props) {
                             {(new Date().toLocaleDateString())}
                         </Text>
                      
-                    
-                        <Button
-                        iconName="Trash"                       
-                        variant='tertiary'
-                        colorVariant='neutral'   
-                          style={{
-                            borderRadius: '0%',
-                            height: '44px',
-                            padding: '6px 8px',
-                            borderRadius: '5px',
-                            fontSize: '16px',
-                            marginBottom: '8px',                          
-                           position: 'relative',
-                            float: 'right',
-                        }} 
-                        styleSheet={{
-                            marginRight: '12px',
-                            hover: {
-                                backgroundColor: appConfig.theme.colors.primary[1000]
-                            },
-                            focus: {
-                                backgroundColor: appConfig.theme.colors.primary[1000]
-                            }
-                        }}
-                        onClick={() => {
-                            handleExcluirMensagem(mensagem);
-                        }}
-                        />
-
-                       
+                    {console.log(mensagem.de)} 
+                    {mensagem.de == usuarioLogado ?
+                    <Button
+                    iconName="Trash"                       
+                    variant='tertiary'
+                    colorVariant='neutral'   
+                      style={{
+                        borderRadius: '0%',
+                        height: '44px',
+                        padding: '6px 8px',
+                        borderRadius: '5px',
+                        fontSize: '16px',
+                        marginBottom: '8px',                          
+                       position: 'relative',
+                        float: 'right',
+                    }} 
+                    styleSheet={{
+                        marginRight: '12px',
+                        hover: {
+                            backgroundColor: appConfig.theme.colors.primary[1000]
+                        },
+                        focus: {
+                            backgroundColor: appConfig.theme.colors.primary[1000]
+                        }
+                    }}
+                    onClick={() => {
+                        handleExcluirMensagem(mensagem);
+                    }}
+                    /> 
+                    : ""
+                    }      
+                        
                     </Box>
 
                         {mensagem.texto.startsWith(':sticker:')
