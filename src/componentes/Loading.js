@@ -26,7 +26,7 @@ export function Loading() {
                         maxWidth: '300px',
                         textAlign: 'center',
                         color: appConfig.theme.colors.primary["000"],
-                        boxShadow: '0 0 5em rgb( 223, 184, 122)'
+                        
                     }}
                 >
                     Carregando o chat...
