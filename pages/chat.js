@@ -5,6 +5,7 @@ import appConfig from '../config.json';
 import { createClient } from '@supabase/supabase-js';
 import { ButtonSendSticker } from '../src/componentes/ButtonSendStickers';
 import { Loading } from '../src/componentes/Loading';
+import { Scrollbar } from "react-scrollbars-custom";
 
 
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQwOTQwNCwiZXhwIjoxOTU4OTg1NDA0fQ.aRGidpO-ArrYzWrQ5RNBqz0vIFjR5qplg9dor6kgigQ';
@@ -256,6 +257,7 @@ function MessageList(props) {
     
 
     return (
+        <Scrollbar style={{}}>
         <Box
             tag="ul"    
             styleSheet={{
@@ -321,7 +323,7 @@ function MessageList(props) {
                         </Text>
                      
                     {console.log(mensagem.de)} 
-                    {mensagem.de == usuarioLogado ?
+                    {mensagem.de.toLowerCase() == usuarioLogado.toLowerCase() ?
                     <Button
                     iconName="Trash"                       
                     variant='tertiary'
@@ -374,5 +376,6 @@ function MessageList(props) {
             })}
            
         </Box>
+        </Scrollbar>
     )
 }
