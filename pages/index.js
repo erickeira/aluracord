@@ -23,8 +23,6 @@ function Titulo(props) {
 
 
 
-
-
   export default function PaginaInicial() {
     const [username, setUsername] = React.useState('erickeira');
     const roteamento = useRouter();

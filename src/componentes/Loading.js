@@ -15,9 +15,6 @@ export function Loading() {
                 }}
             >
                 <Image
-                    styleSheet={{
-                        animation: 'rotate 1s infinite',
-                    }}
                     src='https://c.tenor.com/rtY9m7EokSYAAAAM/cat-loading.gif'
                 />
                 <Text

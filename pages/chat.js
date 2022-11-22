@@ -1,25 +1,10 @@
 import { Box, Text, TextField, Image, Button, Icon} from '@skynexui/components';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import appConfig from '../config.json';
-import { createClient } from '@supabase/supabase-js';
 import { ButtonSendSticker } from '../src/componentes/ButtonSendStickers';
 import { Loading } from '../src/componentes/Loading';
 import { Scrollbar } from "react-scrollbars-custom";
-
-
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQwOTQwNCwiZXhwIjoxOTU4OTg1NDA0fQ.aRGidpO-ArrYzWrQ5RNBqz0vIFjR5qplg9dor6kgigQ';
-const SUPABASE_URL = 'https://jkazvpzglcswgqmgrrjc.supabase.co';
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-function escutaMensagensEmTempoReal(adicionaMensagem) {
-    return supabaseClient
-      .from('mensagens')
-      .on('INSERT', (respostaLive) => {
-        adicionaMensagem(respostaLive.new);
-      })
-      .subscribe();
-  }
 
 export default function ChatPage() {
     const roteamento = useRouter();
@@ -30,74 +15,29 @@ export default function ChatPage() {
     const [loading, setLoading] = React.useState(false);
 
 
-    
-    React.useEffect(() => {
-    supabaseClient
-        .from('mensagens')
-        .select('*')
-        .order('created_at', {ascending: false})
-        .then(({data}) => {
-          console.log(data);
-          setListaDeMensagens(data);
-          setLoading(true);
-        });
-
-        const subscription = escutaMensagensEmTempoReal((novaMensagem) => {
-            setListaDeMensagens((valorAtualDaLista) => {
-              return [
-                novaMensagem,
-                ...valorAtualDaLista,
-              ]
-            });
-          });
-      
-          return () => {
-            subscription.unsubscribe();
-          }
-          
-    }, []);
- 
+    useEffect(() =>{
+        setLoading(false)
+    },[])
 
     function handleExcluirMensagem(mensagemRemover){
-        supabaseClient
-        .from('mensagens')
-        .delete()
-        .match({id : mensagemRemover.id})
-        .then(({data}) => {
-         
-            const listaDeMensagemFiltrada = listaDeMensagens.filter((messageFiltered) => {
-                return messageFiltered.id != data[0].id;
-            })
-            // Setando a nova lista filtrada, com uma mensagem a menos
-            setListaDeMensagens(listaDeMensagemFiltrada)
-         
-        });
-    
+        let novaListaDeMensagens = listaDeMensagens.filter(mensagem => mensagem.id != mensagemRemover.id)   
+        setListaDeMensagens(novaListaDeMensagens)
     }
 
 
     function handleNovaMensagem(novaMensagem){
-        if(novaMensagem != ''){
-        const mensagem   = {
-            // id: listaDeMensagens.length + 1,
+        if(novaMensagem == '') return
+        const mensagemObj   = {
+            id: listaDeMensagens.length + 1,
             de: usuarioLogado, 
             texto: novaMensagem,
 
         };
-        supabaseClient
-            .from('mensagens')
-            .insert([
-                mensagem
-            ])
-            .then(({data}) => {
-
-            });
-
+        let novaListaDeMensagens = listaDeMensagens
+        novaListaDeMensagens.unshift(mensagemObj)
+        setListaDeMensagens(novaListaDeMensagens)
         setMensagem('');
     }
-    }
-
-
 
     // ./Sua lógica vai aqui
     return (
@@ -139,16 +79,10 @@ export default function ChatPage() {
 
                     }}
                 >
-                    {loading === true ? <MessageList mensagens={listaDeMensagens} deleteMessage={handleExcluirMensagem}  />
-                        : <Loading />}
-                    {/* {listaDeMensagens.map((mensagemAtual) => {
-                        return(
-                            <li key={mensagemAtual.id} >
-                                {mensagemAtual.de} : {mensagemAtual.texto}  
-                            </li>
-                        )
-                    })} */}
-
+                    {
+                         !loading ? <MessageList mensagens={listaDeMensagens} deleteMessage={handleExcluirMensagem}  />
+                        : <Loading />
+                    }
                     <Box
                         as="form"
                         styleSheet={{
@@ -245,17 +179,11 @@ function Header(username) {
 }
 
 
-
-
-
 function MessageList(props) {
-
     const handleExcluirMensagem = props.deleteMessage
     const roteamento = useRouter();
     const usuarioLogado = roteamento.query.username;
  
-    
-
     return (
         <Scrollbar style={{}}>
         <Box
@@ -275,17 +203,17 @@ function MessageList(props) {
             {props.mensagens?.map((mensagem) =>{
                 return(
                     <Text
-                    key={mensagem.id}
-                    tag="li"
-                    styleSheet={{
-                        borderRadius: '5px',
-                        padding: '6px',
-                        marginBottom: '12px',
-                        hover: {
-                            backgroundColor: appConfig.theme.colors.neutrals[700],
-                        }
-                    }}
-                >
+                        key={mensagem.id}
+                        tag="li"
+                        styleSheet={{
+                            borderRadius: '5px',
+                            padding: '6px',
+                            marginBottom: '12px',
+                            hover: {
+                                backgroundColor: appConfig.theme.colors.neutrals[700],
+                            }
+                        }}
+                    >
                     <Box
                         styleSheet={{
                             marginBottom: '8px',
@@ -322,34 +250,33 @@ function MessageList(props) {
                             {(new Date().toLocaleDateString())}
                         </Text>
                      
-                    {console.log(mensagem.de)} 
                     {mensagem.de.toLowerCase() == usuarioLogado.toLowerCase() ?
                     <Button
-                    iconName="Trash"                       
-                    variant='tertiary'
-                    colorVariant='neutral'   
-                      style={{
-                        borderRadius: '0%',
-                        height: '44px',
-                        padding: '6px 8px',
-                        borderRadius: '5px',
-                        fontSize: '16px',
-                        marginBottom: '8px',                          
-                       position: 'relative',
-                        float: 'right',
-                    }} 
-                    styleSheet={{
-                        marginRight: '12px',
-                        hover: {
-                            backgroundColor: appConfig.theme.colors.primary[1000]
-                        },
-                        focus: {
-                            backgroundColor: appConfig.theme.colors.primary[1000]
-                        }
-                    }}
-                    onClick={() => {
-                        handleExcluirMensagem(mensagem);
-                    }}
+                        iconName="Trash"                       
+                        variant='tertiary'
+                        colorVariant='neutral'   
+                        style={{
+                            borderRadius: '0%',
+                            height: '44px',
+                            padding: '6px 8px',
+                            borderRadius: '5px',
+                            fontSize: '16px',
+                            marginBottom: '8px',                          
+                        position: 'relative',
+                            float: 'right',
+                        }} 
+                        styleSheet={{
+                            marginRight: '12px',
+                            hover: {
+                                backgroundColor: appConfig.theme.colors.primary[1000]
+                            },
+                            focus: {
+                                backgroundColor: appConfig.theme.colors.primary[1000]
+                            }
+                        }}
+                        onClick={() => {
+                            handleExcluirMensagem(mensagem);
+                        }}
                     /> 
                     : ""
                     }      
